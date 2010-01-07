@@ -234,8 +234,8 @@ void main(int argc, char **argv)
 
 	string pathPrefix = "G:\\dataset\\TimeSeries\\sythetic";
 	//ExperimentGenerateData(pathPrefix);
-	//ExperimentEfficientSlideWindow(pathPrefix);
-	ExperimentEfficientMDLSlideWindow(pathPrefix);
+	ExperimentEfficientSlideWindow(pathPrefix);
+	//ExperimentEfficientMDLSlideWindow(pathPrefix);
 
 	
 	end = clock();

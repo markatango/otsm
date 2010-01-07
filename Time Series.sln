@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Segmentation", "Segmentation\Segmentation.vcproj", "{3824897E-BCF0-4FB3-9085-1B066B7C3222}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeSeriesDiagram", "TimeSeriesDiagram\TimeSeriesDiagram.csproj", "{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,16 +23,6 @@ Global
 		{3824897E-BCF0-4FB3-9085-1B066B7C3222}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{3824897E-BCF0-4FB3-9085-1B066B7C3222}.Release|Win32.ActiveCfg = Release|Win32
 		{3824897E-BCF0-4FB3-9085-1B066B7C3222}.Release|Win32.Build.0 = Release|Win32
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{6FEC5348-1ED4-49FF-B3C0-FE136A57C3F2}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -46,7 +46,7 @@ void ExperimentGenerateData(string pathPrefix)
 		end = clock();
 		double lasts = (end -start) / CLOCKS_PER_SEC;
 		outlog << "dataset" << i << endl << "Time Series Size:" 
-			<< amount[i] << endl << "Professing time:" << lasts << endl << endl;
+			<< amount[i] << endl << "Processing time:" << lasts << endl << endl;
 	}
 
 	cout << "End of generating data." << endl;
@@ -73,7 +73,7 @@ void ExperimentEfficientSlideWindow(std::string pathPrefix)
 	int windowSize = 500;
 	double threshold = 0.3;
 
-	for(size_t i = 1; i <=1; ++i)
+	for(size_t i = 1; i <=8; ++i)
 	{
 		clock_t start, end;
 		start = clock();
@@ -98,7 +98,7 @@ void ExperimentEfficientSlideWindow(std::string pathPrefix)
 		double lasts = (end - start) / CLOCKS_PER_SEC;
 		cout << "End of processing dataset" << i << ", time elapse:" << lasts << endl << endl;
 		outlog << "dataset" << i << endl << "Time Series Size:" << swbu->GetSize() << endl
-			<< "Approximate Size:" << swbu->GetApprSize() << endl << "Professing time:" << lasts << endl << endl;
+			<< "Approximate Size:" << swbu->GetApprSize() << endl << "Processing time:" << lasts << endl << endl;
 	}
 
 	outlog.close();
@@ -137,7 +137,7 @@ void ExperimentEfficientMDLSlideWindow(std::string pathPrefix)
 		double lasts = (end - start) / CLOCKS_PER_SEC;
 		cout << "End of processing dataset" << i << ", time elapse:" << lasts << endl << endl;
 		outlog << "dataset" << i << endl << "Time Series Size:" << mdlsw->GetSize() << endl
-			<< "Approximate Size:" << mdlsw->GetApprSize() << endl << "Professing time:" << lasts << endl << endl;
+			<< "Approximate Size:" << mdlsw->GetApprSize() << endl << "Processing time:" << lasts << endl << endl;
 	}
 	outlog.close();
 }

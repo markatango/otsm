@@ -12,9 +12,13 @@ SEGMENTING_BEGIN
 class Segmenting
 {
 public:
-	Segmenting(){}; 
+	Segmenting():m_SegmentSize(0){}; 
 	void Merge(vector<Partition> &vecPartition, int index1, int index2);
+	long long GetSegmentSize() const;
 	virtual vector<Point> Approximate() = 0;
+
+protected:
+	long long m_SegmentSize;
 	
 };
 
@@ -69,9 +73,13 @@ class ContinuousBottomUp : public ParameterMemorySegmenting
 public:
 	ContinuousBottomUp(double dMaxError, const vector<double> vecDatum);
 	vector<Point> Approximate();
+	void SetOutputFilepath(std::string filepath);
 
 protected:
 	double MergeCost(const Partition &p1, const Partition &p2);
+
+private:
+	std::string m_Outputfile;
 };
 
 /**

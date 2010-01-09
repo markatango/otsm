@@ -22,7 +22,10 @@ void Segmenting::Merge(vector<Partition> &vecPartition, int index1, int index2)
 	vecPartition.erase(remove(itr, itr + 1, vecPartition[index2]));
 }
 
-
+long long Segmenting::GetSegmentSize() const
+{
+	return m_SegmentSize;
+}
 
 
 /////////////////////////////////
@@ -181,9 +184,13 @@ vector<Point> BottomUp::Approximate()
 ContinuousBottomUp::ContinuousBottomUp(double dMaxError, const std::vector<double> vecDatum) 
 	: ParameterMemorySegmenting(dMaxError, vecDatum)
 {
-
+	m_Outputfile = "G:\\dataset\\TimeSeries\\output";
 }
 
+void ContinuousBottomUp::SetOutputFilepath(string filepath)
+{
+	m_Outputfile = filepath;
+}
 
 vector<Point> ContinuousBottomUp::Approximate()
 {
@@ -278,14 +285,16 @@ vector<Point> ContinuousBottomUp::Approximate()
 
 	cout << "Coarse partition size:" << vecPartition.size() << endl; 
 
+	/*
 	ofstream out1("G:\\fine2.txt");
 	for(size_t i = 0; i < this->m_vecDatum.size(); ++i)
 	{
 		out1 << this->m_vecDatum[i] << endl;
 	}
 	out1.close();
+	*/
 
-	ofstream out2("G:\\coarse2.txt");
+	ofstream out2(this->m_Outputfile.c_str());
 	for(size_t i = 0; i < vecPartition.size(); ++i)
 	{
 		out2 << vecPartition[i].first.first << " " << vecPartition[i].first.second << endl;
@@ -296,6 +305,8 @@ vector<Point> ContinuousBottomUp::Approximate()
 	Point p(vecPartition[vecPartition.size() - 1].second.first, vecPartition[vecPartition.size() - 1].second.second);
 	vecAppr.push_back(p);
 	out2.close();
+
+	m_SegmentSize = vecAppr.size();
 
 	return vecAppr;
 }

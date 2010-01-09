@@ -234,9 +234,11 @@ void main(int argc, char **argv)
 
 	string pathPrefix = "G:\\dataset\\TimeSeries\\sythetic";
 	//ExperimentGenerateData(pathPrefix);
-	ExperimentEfficientSlideWindow(pathPrefix);
+	//ExperimentEfficientSlideWindow(pathPrefix);
 	//ExperimentEfficientMDLSlideWindow(pathPrefix);
 
+	string realDataPathPrefix = "G:\\dataset\\TimeSeries\\real";
+	ExperimentPrecision(realDataPathPrefix);
 	
 	end = clock();
 	long long lasts = (end - start) / CLOCKS_PER_SEC;

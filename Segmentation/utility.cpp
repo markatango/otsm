@@ -195,14 +195,39 @@ double Line2LinePerpendicularDistance(const Point &p1, const Point &p2, const Po
 	// Calculate perpendicular distance
 	double perDist1 = Point2LineDistance(p1, p3, p4);
 	double perDist2 = Point2LineDistance(p2, p3, p4);
-	double perDist = ((perDist1 * perDist1) + (perDist2 + perDist2)) / (perDist1 + perDist2);
+	double perDist;
+	if(0 == perDist1 && 0 == perDist2)
+		perDist = 0;
+	else
+		perDist = ((perDist1 * perDist1) + (perDist2 + perDist2)) / (perDist1 + perDist2);
 
 	return perDist;
 }
 
-double Line2LineAngleDistance(double perDist1, double perDist2)
+double Line2LineAngleDistance(double perDist1, double perDist2, const Point &p1, const Point &p2, const Point &p3, const Point &p4)
 {
-	return perDist1 > perDist2 ? (perDist1 - perDist2) : (perDist2 - perDist1);
+	if(perDist1 == perDist2)
+		return 0;
+
+	double line1 = perDist1 > perDist2 ? (perDist1 - perDist2) : (perDist2 - perDist1);
+	double lineOrg = PointDistance(p1.first, p1.second, p2.first, p2.second);
+	double lineSeg = PointDistance(p3.first, p3.second, p4.first, p4.second);
+
+	return lineSeg * line1/lineOrg;
+}
+
+double Line2LineDistance(const Point &p1, const Point &p2, const Point &p3, const Point &p4, double w1, double w2)
+{
+	double dPer = Line2LinePerpendicularDistance(p1, p2, p3, p4);
+	double dAng = Line2LineAngleDistance(Point2LineDistance(p1, p3, p4), Point2LineDistance(p2, p3, p4), p1, p2, p3, p4);
+	double l2lDist = 0.0;
+	
+	if(0 != dPer)
+		l2lDist += w1 * log10(dPer) / log10(2.0);
+	if(0 != dAng)
+		l2lDist += w2 * log10(dAng) / log10(2.0);
+
+	return  l2lDist;
 }
 
 double MDLseq(const deque<Point> &slideWindow, int startIndex, int curIndex)
@@ -213,17 +238,39 @@ double MDLseq(const deque<Point> &slideWindow, int startIndex, int curIndex)
 	double LDH = 0.0;
 	
 	size_t l = curIndex - startIndex;
+	/*
 	for(size_t i = startIndex; i < l; ++i)
 	{
 		LDH += Point2LineDistance(slideWindow[i], slideWindow[startIndex], slideWindow[curIndex]);
 	}
+	*/
 
-	LDH = log10(LDH) / log10(2.0);
+	double angleDist = 0.0;
+	double perpendicularDist = 0.0;
+	Point p3 = slideWindow[startIndex];
+	Point p4 = slideWindow[curIndex];
+	for(size_t i = startIndex; i < l - 1; ++i)
+	{
+		Point p1 = slideWindow[i];
+		Point p2 = slideWindow[i + 1];
+		
+		double perDist1 = Point2LineDistance(p1, p3, p4);
+		double perDist2 = Point2LineDistance(p2, p3, p4);
+
+		angleDist += Line2LineAngleDistance(perDist1, perDist2, p1, p2, p3, p4);
+		perpendicularDist += Line2LinePerpendicularDistance(p1, p2, p3, p4);
+	}
+
+
+
+	LDH = log10(angleDist) / log10(2.0) + log10(perpendicularDist) / log10(2.0);
+
+
 
 	return LH + LDH;
 }
 
-double MDLnoseq(const deque<Point> &slideWindow, int startIndex, int curIndex)
+double MDLnoseq(const deque<Point> &slideWindow, int startIndex, int curIndex)		//	LDH = 0;
 {
 	return log10(PointDistance(slideWindow[startIndex].first, slideWindow[startIndex].second, 
 						slideWindow[curIndex].first, slideWindow[curIndex].second)) / log10(2.0);

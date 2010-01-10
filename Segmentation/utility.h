@@ -24,9 +24,20 @@ bool ReadDataFromFile(vector<double>& vecDatum, const string& strFilename, char 
 //	computing utilities
 double PointDistance(double x1, double y1, double x2, double y2);
 
+
+//	Distance from point p to line (lineStart, lineEnd)
 double Point2LineDistance(const Point &p, const Point &lineStart, const Point &lineEnd);
-double Line2LineAngleDistance(const Point &p1, const Point &p2, const Point &p3, const Point &p4);
-double Line2LinePerpendicularDistance(double perDist1, double perDist2);
+
+//	Angle distance from line(p1,p2) to line(p3,p4)
+double Line2LineAngleDistance(double perDist1, double perDist2, const Point &p1, const Point &p2, const Point &p3, const Point &p4);
+
+//	Perpendicular distance
+double Line2LinePerpendicularDistance(const Point &p1, const Point &p2, const Point &p3, const Point &p4);
+
+//	Line to line distance
+double Line2LineDistance(const Point &p1, const Point &p2, const Point &p3, const Point &p4, double w1 = 1.0, double w2 = 1.0);
+
+
 
 double MDLseq(const deque<Point> &slideWindow, int startIndex, int curIndex);
 double MDLnoseq(const deque<Point> &slideWindow, int startIndex, int curIndex);

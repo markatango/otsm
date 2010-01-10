@@ -145,6 +145,8 @@ void ExperimentEfficientMDLSlideWindow(std::string pathPrefix)
 
 void ExperimentPrecision(const string &pathPrefix)
 {
+	//	Precision of real data
+
 	string IBM = pathPrefix + "\\IBM_data";
 	string ICU = pathPrefix + "\\ICU_data";
 	string Traffic = pathPrefix + "\\Traffic_data";
@@ -161,30 +163,52 @@ void ExperimentPrecision(const string &pathPrefix)
 	string measurelog = pathPrefix + "\\MeasureLog.txt";
 
 	/*	Segmenting	*/
-	double threshold1 = 1.4;
+	/*
+	double threshold1 = 0.91;
 	ExperimentBottomUp(IBM, IBMoutput_bu, seglog, threshold1);
 	ExperimentMDLSlideWindow(IBM, IBMoutput_mdl, seglog);
 
-	double threshold2 = 3.55;
+	
+	double threshold2 = 3.0;
 	ExperimentBottomUp(ICU, ICUoutput_bu, seglog, threshold2);
 	ExperimentMDLSlideWindow(ICU, ICUoutput_mdl, seglog);
 
 	double threshold3 = 1.005;
 	ExperimentBottomUp(Traffic, Trafficoutput_bu, seglog, threshold3);
 	ExperimentMDLSlideWindow(Traffic, Trafficoutput_mdl, seglog);
-	
+	*/
 
 	/*	Measure	*/
 	/*
 	ExperimentMeasure(IBM, IBMoutput_bu, measurelog);
+	
 	ExperimentMeasure(IBM, IBMoutput_mdl, measurelog);
 
 	ExperimentMeasure(ICU, ICUoutput_bu, measurelog);
 	ExperimentMeasure(ICU, ICUoutput_mdl, measurelog);
-
+	
+	
 	ExperimentMeasure(Traffic, Trafficoutput_bu, measurelog);
 	ExperimentMeasure(Traffic, Trafficoutput_mdl, measurelog);
 	*/
+	
+	//	Precision of sythetic data
+	char buffer[10];
+	for(size_t i = 1; i < 8; ++i)
+	{
+		string orgFilepath = "G:\\dataset\\TimeSeries\\sythetic\\";
+		orgFilepath += "\\sythetic";
+		orgFilepath += itoa(i, buffer, 10);;
+		string swFilepath = "G:\\dataset\\TimeSeries\\sythetic\\result\\";
+		swFilepath += "\\sw";
+		swFilepath += itoa(i, buffer, 10);;
+		string mdlFilepath = "G:\\dataset\\TimeSeries\\sythetic\\result\\";
+		mdlFilepath += "\\mdl";
+		mdlFilepath += itoa(i, buffer, 10);
+
+		ExperimentMeasure(orgFilepath, swFilepath, measurelog);
+		ExperimentMeasure(orgFilepath, mdlFilepath, measurelog);
+	}
 }
 
 void ExperimentBottomUp(const string &filename, const string &resultFilename, const string &log, double threshold)
@@ -227,7 +251,7 @@ void ExperimentMDLSlideWindow(const string &filename, const string &resultFilena
 	clock_t start, end;
 	start = clock();
 
-	size_t windowSize = 500;
+	size_t windowSize = 50;
 	MDLSlideWindow *mdlsw = new MDLSlideWindow(windowSize, in, out);
 	mdlsw->Approximate();
 
@@ -244,7 +268,7 @@ void ExperimentMeasure(const string &filename, const string &resultFilename, con
 {
 	cout << "Begining of measureing dataset." << endl;
 	cout << "Input filepath:" << filename << endl;
-	cout << "Output filepath:" << resultFilename << endl;
+	cout << "Result filepath:" << resultFilename << endl;
 
 	ifstream inResult(resultFilename.c_str());
 	ifstream inOrg(filename.c_str());
@@ -256,20 +280,51 @@ void ExperimentMeasure(const string &filename, const string &resultFilename, con
 	istringstream iss;
 
 	double error_rate = 0.0;
-	long long segcount = 0;
+	long long segcount = 0;		//	number of segments
+
+	Point segPoint1;
+	Point segPoint2;
+
+	//	Read first point of segment
+	string line;
+	getline(inResult, line, '\n');
+	++segcount;
+
+	size_t pos = line.find_first_of(" ");
+	string strIndexResult = line.substr(0, pos);
+	string strValueResult = line.substr(pos, line.size() - pos);
+
+	long long indexResult;
+	double valueResult;
+
+	iss.str(strIndexResult);
+	iss >> indexResult;
+	iss.clear();
+	iss.str(strValueResult);
+	iss >> valueResult;
+	iss.clear();
+	segPoint1 = std::make_pair(indexResult, valueResult);
+
+	long long org = 0;		//	total number of original points
 
 	while(false == inResult.eof())
 	{
+		++segcount;
+
 		string line;
 		getline(inResult, line, '\n');
-
-		size_t pos = line.find_first_of(" ");
-		string strIndexResult = line.substr(0, pos);
-		string strValueResult = line.substr(pos, line.size() - pos);
-
+		
+		if(line == "")	//	eof
+			break;
+		
 		long long indexResult;
 		double valueResult;
-
+		size_t posSeg = line.find_first_of(" ");
+		string strIndexResult = line.substr(0, posSeg);
+		
+		//printf("%d, Total size %d, From %d with size %d.\n", ++seg, line.size(), posSeg, line.size() - posSeg - 1);
+		string strValueResult = line.substr(posSeg, line.size() - posSeg);
+		
 		iss.str(strIndexResult);
 		iss >> indexResult;
 		iss.clear();
@@ -277,47 +332,100 @@ void ExperimentMeasure(const string &filename, const string &resultFilename, con
 		iss >> valueResult;
 		iss.clear();
 
+		segPoint2 = std::make_pair(indexResult, valueResult);
+		//cout << "[(" << segPoint1.first << "," << segPoint1.second << "),(" << segPoint2.first << "," << segPoint2.second << ")]" << endl;
+		
+		long orgcount = 0;		//	original point number in segment
+		double seg_error = 0.0;	//	error rate in segment
+		
+		
+		//	Read first point of original point
 		long long indexOrg;
 		double valueOrg;
 
+		Point orgPoint1;
+		Point orgPoint2;
 
-		long orgcount = 0;
-		double seg_error = 0.0;
 
+		string lineOrg;
+		getline(inOrg, lineOrg, '\n');
+
+		++orgcount;
+
+		//cout << "\tin seg[";
+		//cout << "(" << org << "," << lineOrg << "),";
+
+		indexOrg = org;
+		iss.str(lineOrg);
+		iss >> valueOrg;
+		iss.clear();
+
+		orgPoint1 = std::make_pair(indexOrg, valueOrg);
+		
 		do
 		{
+			++orgcount;
+
 			string lineOrg;
 			getline(inOrg, lineOrg, '\n');
 
-			size_t pos = lineOrg.find_first_of(" ");
-			string strIndexOrg = line.substr(0, pos);
-			string strValueOrg = line.substr(pos, line.size() - pos);
+			if(lineOrg == "")
+				break;
 
-			long long indexOrg;
-			double valueOrg;
-
-			iss.str(strIndexOrg);
-			iss >> indexOrg;
-			iss.clear();
-			iss.str(strValueOrg);
+			indexOrg = ++org;			
+			iss.str(lineOrg);
 			iss >> valueOrg;
 			iss.clear();
+			//cout << "(" << indexOrg << "," << valueOrg << "),";
 
-			++orgcount;
+			orgPoint2 = std::make_pair(indexOrg, valueOrg);
 
-			
+			//	Measure error
+			if((segPoint1.first == orgPoint1.first) && (segPoint2.first == orgPoint2.first))
+				seg_error += 0;
+			else
+			{
+				double v = Line2LineDistance(orgPoint1, orgPoint2, segPoint1, segPoint2);
+				//cout << endl << seg_error << "+=" << v << endl;
+				seg_error += v;
+			}
+			//cout << "segerror:" << seg_error << endl;
 
+			orgPoint1 = orgPoint2;
+		
 		}while(indexOrg < indexResult || inOrg.eof());
+		//cout << "]" << endl;
+		
 
+		//error_rate += seg_error / orgcount;
+
+		//cout << "Orgcount:" << orgcount << endl;
+		
+		if(0 != orgcount)
+			error_rate += (seg_error / orgcount);
+
+		segPoint1 = segPoint2;
+		
+		//system("pause");
 	}
+	
 
-	inResult.close();
-	inOrg.close();
+	//error_rate = error_rate / segcount;
+
+	cout << "Segcount:" << segcount << endl;
+	cout << (error_rate /= segcount) << endl;
 
 
 	end = clock();
 	double lasts = (end - start) / CLOCKS_PER_SEC;
 
+	outlog << "Original data file:" << filename.c_str() << endl
+		<< "Result data file:" << resultFilename.c_str() << endl
+		<< "Error rate:" << error_rate << endl;
 	cout << "End of processing dataset, time elapse:" << lasts << endl << endl;
+
+	inResult.close();
+	inOrg.close();
+	outlog.close();
 
 }

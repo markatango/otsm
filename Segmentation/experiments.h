@@ -22,3 +22,5 @@ void ExperimentMDLSlideWindow(const std::string &filename, const std::string &re
 //	Measure precision on datasets
 void ExperimentMeasure(const std::string &filename, const std::string &resultFilename, const std::string &log);
 
+//	Mearure the relationship between error threshold and number of segments
+void ExperimentThresholdTest();

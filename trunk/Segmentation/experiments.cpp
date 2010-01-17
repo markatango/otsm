@@ -56,9 +56,9 @@ void ExperimentGenerateData(string pathPrefix)
 void ExperimentEfficient()
 {
 	string pathPrefix = "G:\\dataset\\TimeSeries\\sythetic";
-	ExperimentEfficientGlobal(pathPrefix);
+	//ExperimentEfficientGlobal(pathPrefix);
 	ExperimentEfficientSlideWindow(pathPrefix);
-	ExperimentEfficientMDLSlideWindow(pathPrefix);
+	//ExperimentEfficientMDLSlideWindow(pathPrefix);
 }
 
 void ExperimentEfficientGlobal(std::string pathPrefix)
@@ -74,7 +74,7 @@ void ExperimentEfficientSlideWindow(std::string pathPrefix)
 	int windowSize = 500;
 	double threshold = 1.1;
 
-	for(size_t i = 1; i <=8; ++i)
+	for(size_t i = 9; i <=9; ++i)
 	{
 		clock_t start, end;
 		start = clock();
@@ -194,17 +194,17 @@ void ExperimentPrecision(const string &pathPrefix)
 	
 	//	Precision of sythetic data
 	char buffer[10];
-	for(size_t i = 1; i < 8; ++i)
+	for(size_t i = 8; i < 10; ++i)
 	{
 		string orgFilepath = "G:\\dataset\\TimeSeries\\sythetic\\";
 		orgFilepath += "\\sythetic";
-		orgFilepath += itoa(i, buffer, 10);;
+		orgFilepath += _itoa_s(i, buffer, 10);;
 		string swFilepath = "G:\\dataset\\TimeSeries\\sythetic\\result\\";
 		swFilepath += "\\sw";
-		swFilepath += itoa(i, buffer, 10);;
+		swFilepath += _itoa_s(i, buffer, 10);;
 		string mdlFilepath = "G:\\dataset\\TimeSeries\\sythetic\\result\\";
 		mdlFilepath += "\\mdl";
-		mdlFilepath += itoa(i, buffer, 10);
+		mdlFilepath += _itoa_s(i, buffer, 10);
 
 		ExperimentMeasure(orgFilepath, swFilepath, measurelog);
 		ExperimentMeasure(orgFilepath, mdlFilepath, measurelog);
@@ -279,7 +279,7 @@ void ExperimentMeasure(const string &filename, const string &resultFilename, con
 
 	istringstream iss;
 
-	double error_rate = 0.0;
+	long double error_rate = 0.0;
 	long long segcount = 0;		//	number of segments
 
 	Point segPoint1;
@@ -427,5 +427,48 @@ void ExperimentMeasure(const string &filename, const string &resultFilename, con
 	inResult.close();
 	inOrg.close();
 	outlog.close();
+
+}
+
+
+void ExperimentThresholdTest()
+{
+	const size_t sizefile = 3;
+	string filenames[sizefile] = {"G:\\dataset\\TimeSeries\\real\\IBM_data", "G:\\dataset\\TimeSeries\\real\\ICU_data", "G:\\dataset\\TimeSeries\\real\\Traffic_data"};
+	string resultFilename = "NULL";
+	string logFile = "G:\\dataset\\TimeSeries\\real\\logSegSizeTest.txt";
+
+	vector<double> thresholds;
+
+	const size_t size = 100;
+
+	double threshold = 0.5;
+	double step = 0.1;
+
+	ofstream out(logFile.c_str(), ios::app);
+
+	for(size_t i = 0; i < sizefile; ++i)
+	{
+		vector<double> vec;
+		ReadDataFromFile(vec, filenames[i]);
+		cout << "Size:" << vec.size() << endl;
+
+		out << "Filename:" << filenames[i] << endl;
+		out << "size = [";
+		for(size_t j = 0; j < size; ++j)
+		{
+			double thr = threshold + j * step;
+
+			ContinuousBottomUp *bottomUp = new ContinuousBottomUp(thr, vec);
+			bottomUp->SetOutputFilepath(resultFilename);
+			bottomUp->Approximate();
+			long long segSize = bottomUp->GetSegmentSize();
+
+			out << segSize << ","; 
+		}
+		out << "];" << endl << endl;
+	}
+
+	out.close();
 
 }

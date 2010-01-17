@@ -294,19 +294,36 @@ vector<Point> ContinuousBottomUp::Approximate()
 	out1.close();
 	*/
 
-	ofstream out2(this->m_Outputfile.c_str());
-	for(size_t i = 0; i < vecPartition.size(); ++i)
-	{
-		out2 << vecPartition[i].first.first << " " << vecPartition[i].first.second << endl;
-		Point p(vecPartition[i].first.first, vecPartition[i].first.second);
-		vecAppr.push_back(p);
-	}
-	out2 << vecPartition[vecPartition.size() - 1].second.first << " " << vecPartition[vecPartition.size() - 1].second.second << endl;
-	Point p(vecPartition[vecPartition.size() - 1].second.first, vecPartition[vecPartition.size() - 1].second.second);
-	vecAppr.push_back(p);
-	out2.close();
 
-	m_SegmentSize = vecAppr.size();
+	if("NULL" != m_Outputfile)
+	{
+		ofstream out2(this->m_Outputfile.c_str());
+		for(size_t i = 0; i < vecPartition.size(); ++i)
+		{
+			out2 << vecPartition[i].first.first << " " << vecPartition[i].first.second << endl;
+			Point p(vecPartition[i].first.first, vecPartition[i].first.second);
+			vecAppr.push_back(p);
+		}
+		out2 << vecPartition[vecPartition.size() - 1].second.first << " " << vecPartition[vecPartition.size() - 1].second.second << endl;
+		Point p(vecPartition[vecPartition.size() - 1].second.first, vecPartition[vecPartition.size() - 1].second.second);
+		vecAppr.push_back(p);
+		out2.close();
+
+		m_SegmentSize = vecAppr.size();
+	}
+	else
+	{
+		for(size_t i = 0; i < vecPartition.size(); ++i)
+		{
+			Point p(vecPartition[i].first.first, vecPartition[i].first.second);
+			vecAppr.push_back(p);
+		}
+
+		Point p(vecPartition[vecPartition.size() - 1].second.first, vecPartition[vecPartition.size() - 1].second.second);
+		vecAppr.push_back(p);
+
+		m_SegmentSize = vecAppr.size();
+	}
 
 	return vecAppr;
 }

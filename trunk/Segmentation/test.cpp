@@ -238,8 +238,10 @@ void main(int argc, char **argv)
 	//ExperimentEfficientMDLSlideWindow(pathPrefix);
 
 	string realDataPathPrefix = "G:\\dataset\\TimeSeries\\real";
-	ExperimentPrecision(realDataPathPrefix);
+	//ExperimentPrecision(realDataPathPrefix);
 	
+	ExperimentThresholdTest();
+
 	end = clock();
 	long long lasts = (end - start) / CLOCKS_PER_SEC;
 	cout << "Cost time:" << lasts << " seconds." << endl;

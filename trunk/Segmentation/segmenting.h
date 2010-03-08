@@ -130,6 +130,7 @@ class MDLSlideWindow
 public:
 	MDLSlideWindow(size_t windowSize, std::istream *in, std::ofstream *out);
 	void SetBatchSize(size_t batchSize);
+	void SetOutput(bool output);
 
 	void Approximate();
 	long long GetSize() const;
@@ -149,6 +150,8 @@ private:
 
 	Index m_CurrentSize;			//	size of data has been read
 	long long m_ApprSize;
+
+	bool m_Output;
 };
 
 SEGMENTING_END

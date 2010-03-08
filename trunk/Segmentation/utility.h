@@ -38,7 +38,7 @@ double Line2LinePerpendicularDistance(const Point &p1, const Point &p2, const Po
 double Line2LineDistance(const Point &p1, const Point &p2, const Point &p3, const Point &p4, double w1 = 1.0, double w2 = 1.0);
 
 
-
+//	MDL related computing
 double MDLseq(const deque<Point> &slideWindow, int startIndex, int curIndex);
 double MDLnoseq(const deque<Point> &slideWindow, int startIndex, int curIndex);
 

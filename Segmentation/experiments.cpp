@@ -472,3 +472,53 @@ void ExperimentThresholdTest()
 	out.close();
 
 }
+
+void ExperimentWindowsizeBatchsize()
+{
+	int windowSize = 100;
+	int windowSizeStep = 50;
+	int batchSize = 10;
+	int batchSizeStep = 5;
+
+	string filename = "G:\\dataset\\TimeSeries\\sythetic\\sythetic2";
+	string log = "G:\\dataset\\TimeSeries\\sythetic\\windowSizeBatchSizelog.txt";
+	string resultFilename = "NULL";
+
+	ofstream outlog(log.c_str());
+
+	outlog << "Y = [";
+	for(size_t i = 0; i < 10; ++i)
+	{
+		int curWindowSize = windowSize + i * windowSizeStep;
+		
+		for(size_t j = 0; j < 10; ++j)
+		{
+			int curBatchSize = batchSize + i * batchSize;
+
+			ifstream *in = new ifstream(filename.c_str());
+			ofstream *out = new ofstream(resultFilename.c_str());
+			
+
+			clock_t start, end;
+			start = clock();
+
+			MDLSlideWindow *mdlsw = new MDLSlideWindow(curWindowSize, in, out);
+			mdlsw->SetOutput(false);
+			mdlsw->SetBatchSize(curBatchSize);
+			mdlsw->Approximate();
+
+			end = clock();
+
+			long double lasts = ((double)(end - start)) / (double)CLOCKS_PER_SEC;
+			
+			outlog << lasts << " ";
+			
+		}
+
+		outlog << ";\n";
+	}
+	outlog << "];";
+
+	outlog.close();
+
+}

@@ -24,3 +24,6 @@ void ExperimentMeasure(const std::string &filename, const std::string &resultFil
 
 //	Mearure the relationship between error threshold and number of segments
 void ExperimentThresholdTest();
+
+//	Test the efficiency between window size and batch size, window size from 100 to 1000 step 100, batch size from 1 to 5 step 1
+void ExperimentWindowsizeBatchsize();

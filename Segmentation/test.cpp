@@ -240,7 +240,9 @@ void main(int argc, char **argv)
 	string realDataPathPrefix = "G:\\dataset\\TimeSeries\\real";
 	//ExperimentPrecision(realDataPathPrefix);
 	
-	ExperimentThresholdTest();
+	//ExperimentThresholdTest();
+
+	ExperimentWindowsizeBatchsize();
 
 	end = clock();
 	long long lasts = (end - start) / CLOCKS_PER_SEC;

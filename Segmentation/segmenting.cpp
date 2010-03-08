@@ -705,7 +705,7 @@ long long SlideWindowBottomUp::GetApprSize() const
 //	Class MDLSlideWindow
 /////////////////////////////////
 MDLSlideWindow::MDLSlideWindow(size_t windowSize, std::istream *in, std::ofstream *out) 
-	: m_WindowSize(windowSize), m_In(in), m_Out(out), m_BatchSize(1), m_CurrentSize(0)
+	: m_WindowSize(windowSize), m_In(in), m_Out(out), m_BatchSize(1), m_CurrentSize(0), m_Output(true)
 {
 	m_BatchSize = 1;
 }
@@ -714,6 +714,11 @@ void MDLSlideWindow::SetBatchSize(size_t batchSize)
 {
 	if(batchSize > 0 && batchSize < m_WindowSize)
 		m_BatchSize = batchSize;
+}
+
+void MDLSlideWindow::SetOutput(bool output)
+{
+	m_Output = output;
 }
 
 vector<Point> MDLSlideWindow::MDLSegmenting()
@@ -858,10 +863,13 @@ void MDLSlideWindow::Approximate()
 			m_SlideWindow.clear();
 		}
 
-		for(size_t i = 0; i < appr.size(); ++i)
+		if(true == m_Output)
 		{
-			*m_Out << appr[i].first << " " << appr[i].second << endl;
-		}	
+			for(size_t i = 0; i < appr.size(); ++i)
+			{
+				*m_Out << appr[i].first << " " << appr[i].second << endl;
+			}
+		}
 
 		lastPoint = appr[appr.size() - 1];
 		apprSize += appr.size();
